@@ -1,10 +1,11 @@
 #include "pulse.h"
 
-Pulse::Pulse(byte connectPin) {
-        pin = connectPin;
+Pulse::Pulse(byte connected_pin, bool reverse_output) {
+        pin = connected_pin;
         nPulses = 0;
         onTime = 0;
         offTime = 0;
+        reverse = reverse_output;
         pinMode(pin, OUTPUT);
         powerOff();
 }
@@ -20,23 +21,23 @@ void Pulse::startPulse(unsigned long on_time, unsigned long off_time, unsigned i
 void Pulse::update() {
         if (switchTime > millis()) switchTime = millis();
         if (nPulses == 0) powerOff();
-        else if ((state == 1) && (millis() > (switchTime + onTime))) {
+        else if ((state == true) && (millis() > (switchTime + onTime))) {
                 switchTime = millis();
                 powerOff();
         }
-        else if ((state == 0) && (millis() > (switchTime + offTime))) {
+        else if ((state == false) && (millis() > (switchTime + offTime))) {
                 switchTime = millis();
                 nPulses--;
                 powerOn();
         }
 }
 
-bool Pulse::isStateHigh() {
-    return state;
+bool Pulse::isOn() {
+    return (state != reverse);
 }
 
-bool Pulse::isStateLow() {
-    return !state;
+bool Pulse::isOff() {
+    return (state == reverse);
 }
 
 bool Pulse::isDone() {
@@ -49,7 +50,7 @@ void Pulse::reset() {
 
 unsigned long Pulse::getTimeToEnd() {
     unsigned long allTime = ((nPulses * onTime) + (nPulses * offTime));
-    if(state == 1) return allTime - (millis() - switchTime);
+    if(state == true) return allTime - (millis() - switchTime);
     return allTime - ((millis() - switchTime) + onTime);
 }
 
@@ -58,12 +59,12 @@ unsigned int Pulse::pulsesToEnd() {
 }
 
 void Pulse::powerOff() {
-        digitalWrite(pin, 0);
-        state = 0;
+        digitalWrite(pin, reverse);
+        state = false;
 }
 
 void Pulse::powerOn() {
         if((onTime == 0) || (nPulses == 0)) return;
-        digitalWrite(pin, 1);
-        state = 1;
+        digitalWrite(pin, !reverse);
+        state = true;
 }

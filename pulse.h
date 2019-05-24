@@ -15,9 +15,9 @@
 
 class Pulse {
 public:
-        Pulse(byte connectPin);
-        bool isStateHigh();
-        bool isStateLow();
+        Pulse(byte connected_pin, bool reverse_output = false);
+        bool isOn();
+        bool isOff();
         bool isDone();
         void reset();
         void startPulse(unsigned long on_time = 10, unsigned long off_time = 0, unsigned int n_pulses = 1);
@@ -29,6 +29,7 @@ public:
 private:
         byte pin;
         bool state;
+        bool reverse;
         unsigned int nPulses;
         unsigned long switchTime;
         unsigned long onTime;
