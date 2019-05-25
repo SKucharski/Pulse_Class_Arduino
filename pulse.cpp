@@ -33,11 +33,11 @@ void Pulse::update() {
 }
 
 bool Pulse::isOn() {
-    return (state != reverse);
+    return state;
 }
 
 bool Pulse::isOff() {
-    return (state == reverse);
+    return !state;
 }
 
 bool Pulse::isDone() {
@@ -49,8 +49,14 @@ void Pulse::reset() {
 }
 
 unsigned long Pulse::getTimeToEnd() {
+    if(!nPulses)
+        return 0;
+
     unsigned long allTime = ((nPulses * onTime) + (nPulses * offTime));
-    if(state == true) return allTime - (millis() - switchTime);
+
+    if(state == true)
+        return allTime - (millis() - switchTime);
+
     return allTime - ((millis() - switchTime) + onTime);
 }
 
