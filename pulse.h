@@ -15,28 +15,29 @@
 
 class Pulse {
 public:
-        Pulse(byte connected_pin, bool reverse_output = false);
-        bool isOn();
-        bool isOff();
-        bool isDone();
-        void reset();
-        void startPulse(unsigned long on_time = 10, unsigned long off_time = 0, unsigned int n_pulses = 1);
-        void update();
-        unsigned long getTimeToEnd();
-        unsigned int pulsesToEnd();
+    Pulse(unsigned char connected_pin, bool reverse_output = false);
+    ~Pulse();
+    void startPulse(unsigned long on_time = 10, unsigned long off_time = 0, unsigned int n_pulses = 1);
+    void update();
+    void reset();
+    bool isOn() const;
+    bool isOff() const;
+    bool isDone() const;
+    unsigned long getTimeToEnd() const;
+    unsigned int pulsesToEnd() const;
 
 
 private:
-        byte pin;
-        bool state;
-        bool reverse;
-        unsigned int nPulses;
-        unsigned long switchTime;
-        unsigned long onTime;
-        unsigned long offTime;
+    bool state;
+    bool reverse;
+    unsigned char pin;
+    unsigned int nPulses;
+    unsigned long switchTime;
+    unsigned long onTime;
+    unsigned long offTime;
 
-        void powerOff();
-        void powerOn();
+    void powerOff();
+    void powerOn();
 };
 
 #endif // PULSE_H
